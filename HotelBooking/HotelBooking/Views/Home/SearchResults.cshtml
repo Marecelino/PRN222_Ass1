@@ -37,7 +37,8 @@ else
                            asp-route-checkIn="@room.CheckInDate.ToString("yyyy-MM-dd")"
                            asp-route-checkOut="@room.CheckOutDate.ToString("yyyy-MM-dd")"
                            asp-route-guests="@room.MaxOccupancy"
-                           class="btn btn-success w-100">Book Now</a>
+                           class="btn btn-success w-100 mb-2">Book Now</a>
+                        <a asp-action="Details" asp-route-id="@room.RoomId" class="btn btn-outline-info w-100">View Details</a>
                     </div>
                 </div>
             </div>

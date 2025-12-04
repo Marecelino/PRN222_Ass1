@@ -1,0 +1,69 @@
+@model HotelBooking.BLL.ViewModels.RoomDetailsViewModel
+
+@{
+    ViewData["Title"] = "Room Details";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-3">@Model.TypeName - Room @Model.RoomNumber</h2>
+            <div class="mb-3">
+                <span class="badge bg-primary">@Model.MaxOccupancy Guests</span>
+                <span class="badge bg-success">$@Model.PricePerNight.ToString("N2") / night</span>
+                <span class="badge bg-warning text-dark">
+                    @Model.AverageRating.ToString("0.0") <i class="bi bi-star-fill"></i>
+                    (@Model.Reviews.Count() reviews)
+                </span>
+            </div>
+            
+            <p class="lead">@Model.Description</p>
+            
+            <hr />
+            
+            <h3 class="mb-4">Reviews</h3>
+            @if (!Model.Reviews.Any())
+            {
+                <p class="text-muted">No reviews yet.</p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">@review.Booking?.User?.FullName</h5>
+                                <small class="text-muted">@review.CreatedDate.ToShortDateString()</small>
+                            </div>
+                            <div class="mb-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rating)
+                                    {
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star text-muted"></i>
+                                    }
+                                }
+                            </div>
+                            <p class="mb-1">@review.Comment</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Interested?</h5>
+                    <p class="card-text">Book this room now to enjoy your stay.</p>
+                    <a asp-action="Index" class="btn btn-primary w-100">Check Availability</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

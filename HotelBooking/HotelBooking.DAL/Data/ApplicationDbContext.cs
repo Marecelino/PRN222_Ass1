@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<RoomType> RoomTypes { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -68,6 +69,19 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasIndex(e => new { e.RoomId, e.CheckInDate, e.CheckOutDate });
+        });
+
+        // Review configuration
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.HasKey(e => e.ReviewId);
+            entity.Property(e => e.Rating).IsRequired();
+            entity.Property(e => e.Comment).IsRequired().HasMaxLength(500);
+
+            entity.HasOne(e => e.Booking)
+                .WithOne() // One-to-One: One Booking has One Review (optional)
+                .HasForeignKey<Review>(e => e.BookingId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

@@ -1,0 +1,60 @@
+@model HotelBooking.DAL.Models.Review
+@{
+    ViewData["Title"] = "Write a Review";
+    var booking = ViewBag.Booking as HotelBooking.DAL.Models.Booking;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Write a Review</h3>
+                </div>
+                <div class="card-body">
+                    @if (booking != null)
+                    {
+                        <div class="alert alert-info">
+                            <h5>Booking Details</h5>
+                            <p class="mb-1"><strong>Room:</strong> @booking.Room.RoomNumber (@booking.Room.RoomType.TypeName)</p>
+                            <p class="mb-0"><strong>Stay:</strong> @booking.CheckInDate.ToShortDateString() - @booking.CheckOutDate.ToShortDateString()</p>
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post">
+                        <input type="hidden" asp-for="BookingId" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="Rating" class="form-label">Rating</label>
+                            <div class="rating-select">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" asp-for="Rating" value="@i" id="rating_@i">
+                                        <label class="form-check-label" for="rating_@i">@i <i class="bi bi-star-fill text-warning"></i></label>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="Rating" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Comment" class="form-label">Your Review</label>
+                            <textarea asp-for="Comment" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
+                            <span asp-validation-for="Comment" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
+                            <a asp-controller="Booking" asp-action="MyBookings" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

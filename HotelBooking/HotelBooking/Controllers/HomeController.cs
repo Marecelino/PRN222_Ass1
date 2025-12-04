@@ -11,10 +11,37 @@ namespace HotelBooking.Controllers;
 public class HomeController : Controller
 {
     private readonly IBookingService _bookingService;
+    private readonly IRoomService _roomService;
+    private readonly IReviewService _reviewService;
 
-    public HomeController(IBookingService bookingService)
+    public HomeController(IBookingService bookingService, IRoomService roomService, IReviewService reviewService)
     {
         _bookingService = bookingService;
+        _roomService = roomService;
+        _reviewService = reviewService;
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var room = await _roomService.GetRoomAsync(id);
+        if (room == null) return NotFound();
+
+        var reviews = await _reviewService.GetRoomReviewsAsync(id);
+        var avgRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+
+        var model = new RoomDetailsViewModel
+        {
+            RoomId = room.RoomId,
+            RoomNumber = room.RoomNumber,
+            TypeName = room.RoomType.TypeName,
+            Description = room.RoomType.Description,
+            PricePerNight = room.RoomType.PricePerNight,
+            MaxOccupancy = room.RoomType.MaxOccupancy,
+            Reviews = reviews,
+            AverageRating = avgRating
+        };
+
+        return View(model);
     }
 
     public IActionResult Index()
