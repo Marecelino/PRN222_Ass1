@@ -1,0 +1,53 @@
+@model HotelBooking.DAL.Models.Booking
+
+@{
+    ViewData["Title"] = "Booking Confirmation";
+}
+
+<div class="text-center mb-4">
+    <div class="text-success mb-3">
+        <svg width="64" height="64" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+        </svg>
+    </div>
+    <h1 class="display-5">Booking Confirmed!</h1>
+    <p class="lead">Your booking has been successfully created.</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Booking Details</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Booking ID:</strong> #@Model.BookingId</p>
+                        <p><strong>Status:</strong> <span class="badge bg-success">@Model.Status</span></p>
+                        <p><strong>Room Number:</strong> @Model.Room.RoomNumber</p>
+                        <p><strong>Room Type:</strong> @Model.Room.RoomType.TypeName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Check-in:</strong> @Model.CheckInDate.ToString("MMMM dd, yyyy")</p>
+                        <p><strong>Check-out:</strong> @Model.CheckOutDate.ToString("MMMM dd, yyyy")</p>
+                        <p><strong>Guests:</strong> @Model.NumberOfGuests</p>
+                        <p><strong>Total Price:</strong> <span class="text-primary fs-5">$@Model.TotalPrice.ToString("N2")</span></p>
+                    </div>
+                </div>
+                
+                @if (!string.IsNullOrEmpty(Model.SpecialRequests))
+                {
+                    <hr />
+                    <p><strong>Special Requests:</strong></p>
+                    <p>@Model.SpecialRequests</p>
+                }
+            </div>
+            <div class="card-footer bg-light">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                    <a asp-action="MyBookings" class="btn btn-primary">View My Bookings</a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

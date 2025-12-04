@@ -1,0 +1,56 @@
+@model HotelBooking.BLL.ViewModels.Rooms.RoomViewModel
+
+@{
+    ViewData["Title"] = "Create Room";
+    Layout = "_Layout";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create New Room</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateRoom" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="RoomNumber" class="form-label"></label>
+                            <input asp-for="RoomNumber" class="form-control" />
+                            <span asp-validation-for="RoomNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="RoomTypeId" class="form-label"></label>
+                            <select asp-for="RoomTypeId" asp-items="Model.RoomTypes" class="form-select">
+                                <option value="">-- Select Room Type --</option>
+                            </select>
+                            <span asp-validation-for="RoomTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="Available">Available</option>
+                                <option value="Occupied">Occupied</option>
+                                <option value="Maintenance">Maintenance</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Rooms" class="btn btn-secondary">Back to List</a>
+                            <button type="submit" class="btn btn-primary">Create Room</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,54 @@
+@model HotelBooking.BLL.ViewModels.SearchViewModel
+
+@{
+    ViewData["Title"] = "Search Rooms";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4">Welcome to Our Hotel</h1>
+    <p class="lead">Find and book your perfect room</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h3 class="card-title mb-4">Search Available Rooms</h3>
+                <form asp-action="Search" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CheckInDate" class="form-label"></label>
+                            <input asp-for="CheckInDate" class="form-control" type="date" />
+                            <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CheckOutDate" class="form-label"></label>
+                            <input asp-for="CheckOutDate" class="form-control" type="date" />
+                            <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="NumberOfGuests" class="form-label"></label>
+                        <select asp-for="NumberOfGuests" class="form-select">
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                        </select>
+                        <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100"> Search Rooms</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

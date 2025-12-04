@@ -1,0 +1,99 @@
+@model IEnumerable<HotelBooking.DAL.Models.Booking>
+
+@{
+    ViewData["Title"] = "Check-In / Check-Out";
+}
+
+<h2 class="mb-4">Check-In / Check-Out Management</h2>
+
+<div class="alert alert-info">
+    <strong>Note:</strong> Showing bookings from yesterday to tomorrow for check-in/check-out operations.
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">
+        <h4>No bookings available</h4>
+        <p>There are no confirmed or checked-in bookings in the current date range.</p>
+        <p>To test this feature:</p>
+        <ol>
+            <li>Logout and login as a customer</li>
+            <li>Create a booking for today or tomorrow</li>
+            <li>Return here to manage check-in/check-out</li>
+        </ol>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Guest Name</th>
+                    <th>Room</th>
+                    <th>Check-In Date</th>
+                    <th>Check-Out Date</th>
+                    <th>Guests</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model)
+                {
+                    <tr>
+                        <td><strong>#@booking.BookingId</strong></td>
+                        <td>@booking.User.FullName</td>
+                        <td>
+                            <strong>Room @booking.Room.RoomNumber</strong><br />
+                            <small class="text-muted">@booking.Room.RoomType.TypeName</small>
+                        </td>
+                        <td>@booking.CheckInDate.ToString("MMM dd, yyyy")</td>
+                        <td>@booking.CheckOutDate.ToString("MMM dd, yyyy")</td>
+                        <td>@booking.NumberOfGuests</td>
+                        <td>
+                            @if (booking.Status == HotelBooking.DAL.Models.BookingStatus.Confirmed)
+                            {
+                                <span class="badge bg-success">@booking.Status</span>
+                            }
+                            else if (booking.Status == HotelBooking.DAL.Models.BookingStatus.CheckedIn)
+                            {
+                                <span class="badge bg-primary">@booking.Status</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@booking.Status</span>
+                            }
+                        </td>
+                        <td>
+                            @if (booking.Status == HotelBooking.DAL.Models.BookingStatus.Confirmed)
+                            {
+                                <a asp-action="CheckIn" asp-route-id="@booking.BookingId" class="btn btn-sm btn-success">
+                                    ? Check In
+                                </a>
+                            }
+                            @if (booking.Status == HotelBooking.DAL.Models.BookingStatus.CheckedIn)
+                            {
+                                <a asp-action="CheckOut" asp-route-id="@booking.BookingId" class="btn btn-sm btn-primary">
+                                    ? Check Out
+                                </a>
+                            }
+                            @if (booking.Status != HotelBooking.DAL.Models.BookingStatus.Confirmed &&
+                                                booking.Status != HotelBooking.DAL.Models.BookingStatus.CheckedIn)
+                            {
+                                <span class="text-muted">No action available</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary"> Back to Home</a>
+</div>
+
+

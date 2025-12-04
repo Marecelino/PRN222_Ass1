@@ -1,0 +1,65 @@
+@model IEnumerable<HotelBooking.DAL.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<h2 class="mb-4">My Bookings</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>You don't have any bookings yet.</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Search Rooms</a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var booking in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>Booking #@booking.BookingId</strong>
+                        <span class="badge bg-@GetStatusColor(booking.Status)">@booking.Status</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Room @booking.Room.RoomNumber - @booking.Room.RoomType.TypeName</h5>
+                        <p class="card-text">
+                            <strong>Check-in:</strong> @booking.CheckInDate.ToString("MMM dd, yyyy")<br />
+                            <strong>Check-out:</strong> @booking.CheckOutDate.ToString("MMM dd, yyyy")<br />
+                            <strong>Guests:</strong> @booking.NumberOfGuests<br />
+                            <strong>Total:</strong> $@booking.TotalPrice.ToString("N2")
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-action="Confirmation" asp-route-id="@booking.BookingId" class="btn btn-sm btn-info">View Details</a>
+                        @if (booking.Status == HotelBooking.DAL.Models.BookingStatus.Confirmed || booking.Status == HotelBooking.DAL.Models.BookingStatus.Pending)
+                        {
+                            <form asp-action="Cancel" asp-route-id="@booking.BookingId" method="post" class="d-inline"
+                                  onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <button type="submit" class="btn btn-sm btn-danger">Cancel Booking</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@functions {
+    string GetStatusColor(HotelBooking.DAL.Models.BookingStatus status)
+    {
+        return status switch
+        {
+            HotelBooking.DAL.Models.BookingStatus.Pending => "warning",
+            HotelBooking.DAL.Models.BookingStatus.Confirmed => "success",
+            HotelBooking.DAL.Models.BookingStatus.CheckedIn => "primary",
+            HotelBooking.DAL.Models.BookingStatus.CheckedOut => "secondary",
+            HotelBooking.DAL.Models.BookingStatus.Cancelled => "danger",
+            _ => "secondary"
+        };
+    }
+}

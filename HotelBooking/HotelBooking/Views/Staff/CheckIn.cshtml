@@ -1,0 +1,40 @@
+@model HotelBooking.DAL.Models.Booking
+
+@{
+    ViewData["Title"] = "Check In Guest";
+}
+
+<h2>Check In Guest</h2>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h4>Booking Details</h4>
+        <dl class="row">
+            <dt class="col-sm-3">Booking ID:</dt>
+            <dd class="col-sm-9">#@Model.BookingId</dd>
+            
+            <dt class="col-sm-3">Guest Name:</dt>
+            <dd class="col-sm-9">@Model.User.FullName</dd>
+            
+            <dt class="col-sm-3">Room:</dt>
+            <dd class="col-sm-9">@Model.Room.RoomNumber - @Model.Room.RoomType.TypeName</dd>
+            
+            <dt class="col-sm-3">Number of Guests:</dt>
+            <dd class="col-sm-9">@Model.NumberOfGuests</dd>
+            
+            <dt class="col-sm-3">Check-In Date:</dt>
+            <dd class="col-sm-9">@Model.CheckInDate.ToString("MMMM dd, yyyy")</dd>
+            
+            <dt class="col-sm-3">Check-Out Date:</dt>
+            <dd class="col-sm-9">@Model.CheckOutDate.ToString("MMMM dd, yyyy")</dd>
+            
+            <dt class="col-sm-3">Total Price:</dt>
+            <dd class="col-sm-9">$@Model.TotalPrice.ToString("N2")</dd>
+        </dl>
+        
+        <form asp-action="ConfirmCheckIn" asp-route-id="@Model.BookingId" method="post">
+            <button type="submit" class="btn btn-success">Confirm Check-In</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

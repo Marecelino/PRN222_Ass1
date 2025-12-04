@@ -1,0 +1,171 @@
+@model HotelBooking.BLL.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2 class="mb-4"> Admin Dashboard</h2>
+
+<form asp-action="Dashboard" method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label for="fromDate" class="form-label">From Date</label>
+        <input type="date" class="form-control" id="fromDate" name="fromDate" value="@Model.FromDate.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-4">
+        <label for="toDate" class="form-label">To Date</label>
+        <input type="date" class="form-control" id="toDate" name="toDate" value="@Model.ToDate.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">&nbsp;</label>
+        <button type="submit" class="btn btn-primary w-100">Update</button>
+    </div>
+</form>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Occupancy Rate</h5>
+                <p class="display-4">@Model.OccupancyRate%</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Revenue</h5>
+                <p class="display-4">$@Model.TotalRevenue.ToString("N0")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Bookings</h5>
+                <p class="display-4">@Model.TotalBookings</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Date Range</h5>
+                <p class="fs-6">@Model.FromDate.ToString("MMM dd") - @Model.ToDate.ToString("MMM dd")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Bookings by Room Type</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="roomTypeChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Daily Revenue</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Bookings by Room Type - Details</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Number of Bookings</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.BookingsByRoomType)
+                {
+                    <tr>
+                        <td>@item.RoomTypeName</td>
+                        <td>@item.BookingCount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Bookings by Room Type Chart
+        const roomTypeCtx = document.getElementById('roomTypeChart').getContext('2d');
+        const roomTypeChart = new Chart(roomTypeCtx, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.BookingsByRoomType.Select(b => b.RoomTypeName))),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.BookingsByRoomType.Select(b => b.BookingCount))),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Daily Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.DailyRevenues.Select(d => d.Date))),
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: @Html.Raw(Json.Serialize(Model.DailyRevenues.Select(d => d.Revenue))),
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

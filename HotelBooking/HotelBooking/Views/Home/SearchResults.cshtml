@@ -1,0 +1,50 @@
+@model IEnumerable<HotelBooking.BLL.ViewModels.RoomSearchResultViewModel>
+
+@{
+    ViewData["Title"] = "Available Rooms";
+}
+
+<h2 class="mb-4">Available Rooms</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <h4>No rooms available</h4>
+        <p>Sorry, no rooms match your search criteria. Please try different dates or number of guests.</p>
+        <a asp-action="Index" class="btn btn-primary">Search Again</a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var room in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@room.TypeName - Room @room.RoomNumber</h5>
+                        <p class="card-text">@room.Description</p>
+                        <ul class="list-unstyled">
+                            <li><strong>Max Occupancy:</strong> @room.MaxOccupancy guests</li>
+                            <li><strong>Price per Night:</strong> $@room.PricePerNight.ToString("N2")</li>
+                            <li><strong>Number of Nights:</strong> @room.NumberOfNights</li>
+                            <li class="mt-2"><strong>Total Price:</strong> <span class="text-primary fs-4">$@room.TotalPrice.ToString("N2")</span></li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a asp-controller="Booking" asp-action="Create"
+                           asp-route-roomId="@room.RoomId"
+                           asp-route-checkIn="@room.CheckInDate.ToString("yyyy-MM-dd")"
+                           asp-route-checkOut="@room.CheckOutDate.ToString("yyyy-MM-dd")"
+                           asp-route-guests="@room.MaxOccupancy"
+                           class="btn btn-success w-100">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-secondary"> Back to Search</a>
+    </div>
+}

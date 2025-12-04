@@ -1,0 +1,58 @@
+@model HotelBooking.BLL.ViewModels.Bookings.CreateBookingViewModel
+
+@{
+    ViewData["Title"] = "Complete Booking";
+}
+
+<h2>Complete Your Booking</h2>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h4>Booking Details</h4>
+                <form asp-action="Create" method="post">
+                    <input type="hidden" asp-for="RoomId" />
+                    <input type="hidden" asp-for="CheckInDate" />
+                    <input type="hidden" asp-for="CheckOutDate" />
+                    <input type="hidden" asp-for="TotalPrice" />
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="NumberOfGuests" class="form-label"></label>
+                        <input asp-for="NumberOfGuests" class="form-control" type="number" min="1" max="5" />
+                        <span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="SpecialRequests" class="form-label"></label>
+                        <textarea asp-for="SpecialRequests" class="form-control" rows="3" placeholder="Any special requests or requirements..."></textarea>
+                        <span asp-validation-for="SpecialRequests" class="text-danger"></span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">Booking Summary</h5>
+                <hr />
+                <p><strong>Room:</strong> @Model.RoomNumber</p>
+                <p><strong>Type:</strong> @Model.TypeName</p>
+                <p><strong>Check-in:</strong> @Model.CheckInDate.ToString("MMM dd, yyyy")</p>
+                <p><strong>Check-out:</strong> @Model.CheckOutDate.ToString("MMM dd, yyyy")</p>
+                <hr />
+                <h4 class="text-primary">Total: $@Model.TotalPrice.ToString("N2")</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
